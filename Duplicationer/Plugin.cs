@@ -4,6 +4,8 @@ using Unfoundry;
 using System.Collections.Generic;
 using C3.ModKit;
 using System.Reflection;
+using C3;
+using System.Linq;
 
 namespace Duplicationer
 {
@@ -34,7 +36,7 @@ namespace Duplicationer
         public static TypedConfigEntry<bool> configCheatModeEnabled;
         public static TypedConfigEntry<bool> configAllowUnresearchedRecipes;
 
-        internal static Dictionary<string, UnityEngine.Object> bundleMainAssets;
+        internal static Dictionary<System.Type, Dictionary<string, Object>> bundleMainAssets;
 
         private static BlueprintToolCHM blueprintTool;
 
@@ -44,9 +46,15 @@ namespace Duplicationer
 
         public static T GetAsset<T>(string name) where T : UnityEngine.Object
         {
-            if (!bundleMainAssets.TryGetValue(name, out var asset))
+            if (!bundleMainAssets.TryGetValue(typeof(T), out var assetDict))
             {
-                log.Log($"Missing asset '{name}'");
+                Debug.Log($"Missing asset dictionary for type '{typeof(T)}'");
+                return null;
+            }
+
+            if (!assetDict.TryGetValue(name, out var asset))
+            {
+                Debug.Log($"Missing asset with '{name}' and type '{typeof(T)}'");
                 return null;
             }
 
@@ -107,7 +115,28 @@ namespace Duplicationer
 
             if (!Directory.Exists(BlueprintFolder)) Directory.CreateDirectory(BlueprintFolder);
 
-            bundleMainAssets = typeof(Mod).GetField("assets", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(mod) as Dictionary<string, UnityEngine.Object>;
+            bundleMainAssets = new Dictionary<System.Type, Dictionary<string, Object>>();
+            foreach (KeyValuePair<AssetBundle, global::UnityEngine.Object[]> keyValuePair in AssetManager.getAllLoadedAssetBundles())
+            {
+                if (!mod.modInfo.assetBundles.Any(s => keyValuePair.Key.name.Equals(s)))
+                    continue;
+                global::UnityEngine.Object[] value = keyValuePair.Value;
+                for (int i = 0; i < value.Length; i++)
+                {
+                    Texture2D texture2D = value[i] as Texture2D;
+                    Debug.Log(string.Format("Unfoundry found {0} asset {1}, index={2}", texture2D == null ? "non-texture" : "texture", value[i], i));
+                    if (!bundleMainAssets.TryGetValue(value[i].GetType(), out var assetDict))
+                    {
+                        assetDict = new Dictionary<string, Object>();
+                        bundleMainAssets.Add(value[i].GetType(), assetDict);
+                    }
+
+                    if (assetDict.TryGetValue(value[i].name, out var currentVal))
+                        Debug.Log($"Unfoundry already have registered asset with name '{value[i].name}' and type '{value[i].GetType()}': '{currentVal}'");
+                    else
+                        assetDict.Add(value[i].name, value[i]);
+                }
+            }
 
             blueprintTool = new BlueprintToolCHM();
             blueprintTool.LoadIconSprites();

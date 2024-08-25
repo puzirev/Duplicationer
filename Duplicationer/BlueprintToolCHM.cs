@@ -1059,21 +1059,22 @@ namespace Duplicationer
 
         internal void LoadIconSprites()
         {
-            iconBlack = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "black");
-            iconEmpty = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "empty");
-            iconCopy = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "copy");
-            iconCopyInPlace = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "copy-in-place");
-            iconMove = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "move");
-            iconMoveSideways = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "move-sideways");
-            iconMoveVertical = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "move-vertical");
-            iconPanel = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "panel");
-            iconPaste = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "paste");
-            iconPlace = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "place");
-            iconRepeat = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "repeat");
-            iconResizeVertical = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "resize-vertical");
-            iconResize = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "resize");
-            iconSelectArea = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "select-area");
-            iconMirror = new LazyIconSprite(DuplicationerPlugin.bundleMainAssets, "mirror");
+            var sprite_dict = DuplicationerPlugin.bundleMainAssets.GetValueOrDefault(typeof(Sprite));
+            iconBlack = new LazyIconSprite(sprite_dict, "black");
+            iconEmpty = new LazyIconSprite(sprite_dict, "empty");
+            iconCopy = new LazyIconSprite(sprite_dict, "copy");
+            iconCopyInPlace = new LazyIconSprite(sprite_dict, "copy-in-place");
+            iconMove = new LazyIconSprite(sprite_dict, "move");
+            iconMoveSideways = new LazyIconSprite(sprite_dict, "move-sideways");
+            iconMoveVertical = new LazyIconSprite(sprite_dict, "move-vertical");
+            iconPanel = new LazyIconSprite(sprite_dict, "panel");
+            iconPaste = new LazyIconSprite(sprite_dict, "paste");
+            iconPlace = new LazyIconSprite(sprite_dict, "place");
+            iconRepeat = new LazyIconSprite(sprite_dict, "repeat");
+            iconResizeVertical = new LazyIconSprite(sprite_dict, "resize-vertical");
+            iconResize = new LazyIconSprite(sprite_dict, "resize");
+            iconSelectArea = new LazyIconSprite(sprite_dict, "select-area");
+            iconMirror = new LazyIconSprite(sprite_dict, "mirror");
         }
 
         private void OnGameInitializationDone()
